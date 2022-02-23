@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </head>
+    <body>
+
+        <label>Introduce el nombre del alumno que quieres buscar:</label>
+        <input id="dato"></input>
+        <button onclick="search(document.getElementById('dato').value)">Buscar</button>
+        <p></p>
+        <!-- <div id="resultado"></div> -->
+        <table id="resultado"></table>
+        <script>
+            function search(dato){
+                $.ajax({
+                    type: 'GET',
+                    url: `/consulta`,
+                    data : { "name" : dato },//respuesta para el server
+                    dataType: "json",
+                    success: function(json){
+                        if(json.length == 0){
+                            const p = document.querySelector("p");
+                            p.textContent = document.getElementById("dato").value + " no existe en la BBDD";
+                        }else{
+                            pintado(json);
+                        }
+                    }
+                });
+            }
+            function pintado(json){
+                var html = `<tr><th>Nombre</th><th>Apellido</th><th>Edad</th></tr>`
+                for(var i = 0;i<json.length;i++){
+                    html += `<tr><td> ${json[i].name}</td><td>${json[i].surname}</td><td>${json[i].edad}</td></tr>`
+                }
+                
+                const p = document.querySelector(`#resultado`); 
+                p.innerHTML = html;
+            }
+        </script>
+    </body>
+</html>
